@@ -87,19 +87,16 @@ def perform_planning(velocity_signal,current_position,bot_range,world,bot_radius
 
     obstacles_in_path=obstacle_in_path(obstacles_in_range,dest_vector,current_position,bot_radius)
 
-    print("Obstacles in Path: {}".format(obstacles_in_path[:]))
-
-    # for i in range(3):
-    #     velocity_signal[i]=dest_vector[i]/3
+    # print("Obstacles in Path: {}".format(obstacles_in_path[:]))
 
     if(len(obstacles_in_path)==0):
 
         for i in range(3):
-            velocity_signal[i]=dest_vector[i]
+            velocity_signal[i]=dest_vector[i]/3
 
     else:
 
         x=calculate_displacement_vec(obstacles_in_path,dest_vector,current_position)
 
         for i in range(3):
-            velocity_signal[i]=x[i]
+            velocity_signal[i]=x[i]/3
