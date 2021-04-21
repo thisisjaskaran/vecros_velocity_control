@@ -5,12 +5,14 @@ import velocity_control
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
+# initialise world
 def initialise_world(world_size):
 
     world = [[ [0 for col in range(world_size)] for col in range(world_size)] for row in range(world_size)]
 
     return world
 
+# function to add obstacles
 def add_obstacle(world,x,y,z,obstacles):
 
     world[x][y][z]=1
@@ -19,6 +21,7 @@ def add_obstacle(world,x,y,z,obstacles):
 
     return world
 
+# update position based on control signal
 def update_position(velocity_signal,current_position):
 
     timestep=0.1
@@ -30,12 +33,14 @@ def update_position(velocity_signal,current_position):
     
 if __name__=="__main__":
 
+    # define bot and world parameters
     destination_threshold=0.1
     source=[0.0,0.0,0.0]
     dest=[10.0,10.0,10.0]
+    bot_range=1.0
+    bot_radius=0.5
 
-    world_size=10
-
+    #define shared variables
     velocity_signal=multiprocessing.Array('d',3)
     current_position=multiprocessing.Array('d',3)
 
@@ -43,7 +48,8 @@ if __name__=="__main__":
     current_position[1]=source[1]
     current_position[2]=source[2]
 
-    bot_range=1.0
+    # initialise world of size (world_size * world_size * world_size) and add obstacles
+    world_size=10
 
     world=initialise_world(world_size)
 
@@ -60,8 +66,6 @@ if __name__=="__main__":
     world=add_obstacle(world,2,2,2,obstacles)
     world=add_obstacle(world,6,6,6,obstacles)
 
-    bot_radius=0.5
-
     fig = plt.figure(figsize=(10,10))
     ax = fig.add_subplot(111, projection='3d')
 
@@ -71,6 +75,7 @@ if __name__=="__main__":
 
         p2 = multiprocessing.Process(target=update_position,args=(velocity_signal,current_position))
 
+        #plot bot position
         ax.scatter(current_position[0],current_position[1],current_position[2])
 
         p1.start()
@@ -79,7 +84,7 @@ if __name__=="__main__":
         p1.join()
         p2.join()
 
-    
+    #plot obstacles    
     for obstacle in obstacles:
         ax.scatter(obstacle[0],obstacle[1],obstacle[2])
 

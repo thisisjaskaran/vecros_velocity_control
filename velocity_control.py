@@ -3,12 +3,14 @@
 import numpy as np
 from math import sqrt
 
+# normalize a vector
 def normalize(v):
     norm = np.linalg.norm(v)
     if norm == 0:
         return v
     return v / norm
 
+# find distance of a point from a line
 def find_dist_from_dest_vec(vec,point,current_position):
 
     param = np.dot(point,vec)-np.dot(current_position,vec)
@@ -19,10 +21,12 @@ def find_dist_from_dest_vec(vec,point,current_position):
 
     return sqrt(dx*dx+dy*dy+dz*dz)
 
+# find distance between 2 points
 def distance(a,b):
     vec=[a[0]-b[0],a[1]-b[1],a[2]-b[2]]
     return sqrt(vec[0]*vec[0]+vec[1]*vec[1]+vec[2]*vec[2])
 
+# find obstacles in bot range
 def find_obstacles(obstacles,current_position,bot_range):
 
     visible=[]
@@ -34,6 +38,7 @@ def find_obstacles(obstacles,current_position,bot_range):
     
     return visible
 
+# sort list of obstacles in ascending order of distance from bot (bubble sort)
 def sort_by_distance(obstacles,current_position):
     n = len(obstacles)
 
@@ -46,6 +51,7 @@ def sort_by_distance(obstacles,current_position):
 
     return obstacles
 
+# find obstacles in range which are also in path of line joining current position to final destination (ideal trajectory)
 def obstacle_in_path(obstacles_in_range,dest_vector,current_position,bot_radius):
 
     in_path=[]
@@ -54,14 +60,17 @@ def obstacle_in_path(obstacles_in_range,dest_vector,current_position,bot_radius)
 
     for obstacle in obstacles_in_range:
 
+        # if obstacle lies on line joining current position to final destination
         if(abs(find_dist_from_dest_vec(dest_vector,obstacle,current_position))<bot_radius*2):
             inline=1
 
+        # if obstacle lies in the path but not exactly on the line joining current position to final destination
         if(abs(find_dist_from_dest_vec(dest_vector,obstacle,current_position))<bot_radius):
             in_path.append(obstacle)
 
     return in_path,inline
 
+# calculate velocity control if obstacle in path
 def calculate_displacement_vec(obstacles_in_path,dest_vector,current_position):
 
     param = np.dot(obstacles_in_path[0],dest_vector)-np.dot(current_position,dest_vector)
@@ -76,6 +85,7 @@ def calculate_displacement_vec(obstacles_in_path,dest_vector,current_position):
 
     return displacement_vec
 
+# perform planning
 def perform_planning(velocity_signal,current_position,bot_range,world,bot_radius,dest,obstacles):
 
     dest_vector=[dest[0]-current_position[0],dest[1]-current_position[1],dest[2]-current_position[2]]
@@ -96,11 +106,13 @@ def perform_planning(velocity_signal,current_position,bot_range,world,bot_radius
 
     else:
 
+        # no obstacle avoidance; follow optimal trajectory
         if(len(obstacles_in_path)==0):
 
             for i in range(3):
                 velocity_signal[i]=dest_vector[i]/3
 
+        # obstacle avoidance
         else:
 
             x=calculate_displacement_vec(obstacles_in_path,dest_vector,current_position)
