@@ -37,12 +37,16 @@ if __name__=="__main__":
 
     destination_threshold=0.1
     source=[0.0,0.0,0.0]
-    dest=[10.0,10.0,10.0]
+    dest=[10.0,9.0,0.0]
 
     world_size=10
 
     velocity_signal=multiprocessing.Array('d',3)
     current_position=multiprocessing.Array('d',3)
+
+    current_position[0]=source[0]
+    current_position[1]=source[1]
+    current_position[2]=source[2]
 
     bot_range=2.0
 
@@ -63,13 +67,14 @@ if __name__=="__main__":
 
     bot_radius=0.2
 
-    fig = plt.figure(figsize=(dest[0]-source[0],dest[1]-source[1]))
+    # fig = plt.figure(figsize=(dest[0]-source[0],dest[1]-source[1]))
+    fig = plt.figure(figsize=(10,10))
     ax = fig.add_subplot(111, projection='3d')
 
     # for i in range(3):
     #     velocity_signal[i]=0.0
 
-    while(abs(current_position[0]-dest[0])>destination_threshold and abs(current_position[1]-dest[1])>destination_threshold and abs(current_position[2]-dest[2])>destination_threshold):
+    while(abs(current_position[0]-dest[0])>destination_threshold or abs(current_position[1]-dest[1])>destination_threshold or abs(current_position[2]-dest[2])>destination_threshold):
 
         p1 = multiprocessing.Process(target=velocity_control.perform_planning, args=(velocity_signal, current_position,bot_range,world,bot_radius,dest,obstacles))
 

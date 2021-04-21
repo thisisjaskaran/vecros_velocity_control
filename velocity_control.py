@@ -10,10 +10,6 @@ def normalize(v):
     return v / norm
 
 def find_dist_from_dest_vec(vec,point,current_position):
-    # o_dot_v=np.dot([point[0]-current_position[0],point[1]-current_position[1],point[2]-current_position[2]],vec)
-    # o_dot_v_into_v=o_dot_v*vec
-    # distance_vec=[point[0]-o_dot_v_into_v[0],point[1]-o_dot_v_into_v[1],point[2]-o_dot_v_into_v[2]]
-    # return sqrt(distance_vec[0]*distance_vec[0]+distance_vec[1]*distance_vec[1]+distance_vec[2]*distance_vec[2])
 
     param = np.dot(point,vec)-np.dot(current_position,vec)
 
@@ -64,7 +60,7 @@ def obstacle_in_path(obstacles_in_range,dest_vector,current_position,bot_radius)
             inline=1
 
         if(abs(find_dist_from_dest_vec(dest_vector,obstacle,current_position))<bot_radius):
-            print("Distance of Obstacles in Path: {}".format(find_dist_from_dest_vec(dest_vector,obstacle,current_position)))
+            # print("Distance of Obstacles in Path: {}".format(find_dist_from_dest_vec(dest_vector,obstacle,current_position)))
             in_path.append(obstacle)
 
     # print("Obstacles in Path: {}".format(in_path[:]))
@@ -95,7 +91,7 @@ def perform_planning(velocity_signal,current_position,bot_range,world,bot_radius
     dest_vector=[dest[0]-current_position[0],dest[1]-current_position[1],dest[2]-current_position[2]]
     dest_vector=normalize(dest_vector)
 
-    # print(dest_vector)
+    print(dest_vector)
     # print("Obstacles: {}".format(obstacles[:]))
 
     obstacles_in_range=find_obstacles(obstacles,current_position,bot_range)
@@ -107,12 +103,6 @@ def perform_planning(velocity_signal,current_position,bot_range,world,bot_radius
     obstacles_in_path=sort_by_distance(obstacles_in_path,current_position)
 
     # print(obstacles_in_path)
-
-    # if(obstacles_in_path[0]==[9999.0,9999.0,9999.0]):
-    #     for i in range(3):
-    #         velocity_signal[i]=0.0
-    #     velocity_signal[0]=1.0
-    # print("Obstacles in Path: {}".format(obstacles_in_path[:]))
 
     if(inline==1):
         for i in range(3):
