@@ -4,7 +4,6 @@ import multiprocessing
 import velocity_control
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-import time
 
 def initialise_world(world_size):
 
@@ -23,10 +22,6 @@ def add_obstacle(world,x,y,z,obstacles):
 def update_position(velocity_signal,current_position):
 
     timestep=0.1
-
-    # print("Position: {}".format(current_position[:]))
-
-    # print("Signal: {}".format(velocity_signal[:]))
 
     for i in range(3):
         current_position[i]=current_position[i]+velocity_signal[i]*timestep
@@ -67,12 +62,8 @@ if __name__=="__main__":
 
     bot_radius=0.5
 
-    # fig = plt.figure(figsize=(dest[0]-source[0],dest[1]-source[1]))
     fig = plt.figure(figsize=(10,10))
     ax = fig.add_subplot(111, projection='3d')
-
-    # for i in range(3):
-    #     velocity_signal[i]=0.0
 
     while(abs(current_position[0]-dest[0])>destination_threshold or abs(current_position[1]-dest[1])>destination_threshold or abs(current_position[2]-dest[2])>destination_threshold):
 
@@ -80,10 +71,7 @@ if __name__=="__main__":
 
         p2 = multiprocessing.Process(target=update_position,args=(velocity_signal,current_position))
 
-        # fig = plt.figure(figsize=(20,20))
-        # ax = fig.add_subplot(111, projection='3d')
         ax.scatter(current_position[0],current_position[1],current_position[2])
-        # plt.show()
 
         p1.start()
         p2.start()
@@ -91,7 +79,6 @@ if __name__=="__main__":
         p1.join()
         p2.join()
 
-        # time.sleep(1)
     
     for obstacle in obstacles:
         ax.scatter(obstacle[0],obstacle[1],obstacle[2])
