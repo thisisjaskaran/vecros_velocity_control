@@ -37,7 +37,7 @@ if __name__=="__main__":
 
     destination_threshold=0.1
     source=[0.0,0.0,0.0]
-    dest=[10.0,9.0,0.0]
+    dest=[10.0,10.0,10.0]
 
     world_size=10
 
@@ -48,7 +48,7 @@ if __name__=="__main__":
     current_position[1]=source[1]
     current_position[2]=source[2]
 
-    bot_range=2.0
+    bot_range=1.0
 
     world=initialise_world(world_size)
 
@@ -65,7 +65,7 @@ if __name__=="__main__":
     world=add_obstacle(world,2,2,2,obstacles)
     world=add_obstacle(world,6,6,6,obstacles)
 
-    bot_radius=0.2
+    bot_radius=0.5
 
     # fig = plt.figure(figsize=(dest[0]-source[0],dest[1]-source[1]))
     fig = plt.figure(figsize=(10,10))

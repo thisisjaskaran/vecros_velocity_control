@@ -91,7 +91,7 @@ def perform_planning(velocity_signal,current_position,bot_range,world,bot_radius
     dest_vector=[dest[0]-current_position[0],dest[1]-current_position[1],dest[2]-current_position[2]]
     dest_vector=normalize(dest_vector)
 
-    print(dest_vector)
+    # print(dest_vector)
     # print("Obstacles: {}".format(obstacles[:]))
 
     obstacles_in_range=find_obstacles(obstacles,current_position,bot_range)
