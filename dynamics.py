@@ -63,7 +63,7 @@ if __name__=="__main__":
 
     bot_radius=0.2
 
-    fig = plt.figure(figsize=(20,20))
+    fig = plt.figure(figsize=(dest[0]-source[0],dest[1]-source[1]))
     ax = fig.add_subplot(111, projection='3d')
 
     # for i in range(3):
