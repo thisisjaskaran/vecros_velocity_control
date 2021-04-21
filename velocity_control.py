@@ -38,21 +38,38 @@ def find_obstacles(obstacles,current_position,bot_range):
     
     return visible
 
+def sort_by_distance(obstacles,current_position):
+    n = len(obstacles)
+
+    for i in range(n):
+
+        for j in range(0, n-i-1):
+
+            if distance(current_position,obstacles[j]) > distance(current_position,obstacles[j+1]) :
+                obstacles[j], obstacles[j+1] = obstacles[j+1], obstacles[j]
+
+    return obstacles
+
 def obstacle_in_path(obstacles_in_range,dest_vector,current_position,bot_radius):
 
     in_path=[]
+
+    inline=0
 
     for obstacle in obstacles_in_range:
 
         # print(find_dist_from_dest_vec(dest_vector,obstacle,current_position))
 
-        if(find_dist_from_dest_vec(dest_vector,obstacle,current_position)<bot_radius):
-            # print("Distance of Obstacles in Path: {}".format(find_dist_from_dest_vec(dest_vector,obstacle,current_position)))
+        if(abs(find_dist_from_dest_vec(dest_vector,obstacle,current_position))<bot_radius*2):
+            inline=1
+
+        if(abs(find_dist_from_dest_vec(dest_vector,obstacle,current_position))<bot_radius):
+            print("Distance of Obstacles in Path: {}".format(find_dist_from_dest_vec(dest_vector,obstacle,current_position)))
             in_path.append(obstacle)
 
     # print("Obstacles in Path: {}".format(in_path[:]))
 
-    return in_path
+    return in_path,inline
 
 def calculate_displacement_vec(obstacles_in_path,dest_vector,current_position):
 
@@ -85,18 +102,32 @@ def perform_planning(velocity_signal,current_position,bot_range,world,bot_radius
 
     # print("Obstacles in Range: {}".format(obstacles_in_range[:]))
 
-    obstacles_in_path=obstacle_in_path(obstacles_in_range,dest_vector,current_position,bot_radius)
+    obstacles_in_path,inline=obstacle_in_path(obstacles_in_range,dest_vector,current_position,bot_radius)
 
+    obstacles_in_path=sort_by_distance(obstacles_in_path,current_position)
+
+    # print(obstacles_in_path)
+
+    # if(obstacles_in_path[0]==[9999.0,9999.0,9999.0]):
+    #     for i in range(3):
+    #         velocity_signal[i]=0.0
+    #     velocity_signal[0]=1.0
     # print("Obstacles in Path: {}".format(obstacles_in_path[:]))
 
-    if(len(obstacles_in_path)==0):
-
+    if(inline==1):
         for i in range(3):
-            velocity_signal[i]=dest_vector[i]/3
+            velocity_signal[i]=0.0
+        velocity_signal[0]=bot_radius/5
 
     else:
+        if(len(obstacles_in_path)==0):
 
-        x=calculate_displacement_vec(obstacles_in_path,dest_vector,current_position)
+            for i in range(3):
+                velocity_signal[i]=dest_vector[i]/3
 
-        for i in range(3):
-            velocity_signal[i]=x[i]/3
+        else:
+
+            x=calculate_displacement_vec(obstacles_in_path,dest_vector,current_position)
+
+            for i in range(3):
+                velocity_signal[i]=x[i]/3
