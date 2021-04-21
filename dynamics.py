@@ -24,19 +24,19 @@ def update_position(velocity_signal,current_position):
 
     timestep=0.1
 
-    print("Position: {}".format(current_position[:]))
+    # print("Position: {}".format(current_position[:]))
 
     # print("Signal: {}".format(velocity_signal[:]))
 
     for i in range(3):
         current_position[i]=current_position[i]+velocity_signal[i]*timestep
 
-    # print("Updated Position: {}".format(current_position[:]))
+    print("Updated Position: {}".format(current_position[:]))
     
 if __name__=="__main__":
 
     destination_threshold=0.1
-    source=[4.0,0.0,0.0]
+    source=[0.0,0.0,0.0]
     dest=[10.0,10.0,10.0]
 
     world_size=10
@@ -44,7 +44,7 @@ if __name__=="__main__":
     velocity_signal=multiprocessing.Array('d',3)
     current_position=multiprocessing.Array('d',3)
 
-    bot_range=1.0
+    bot_range=2.0
 
     world=initialise_world(world_size)
 
@@ -57,11 +57,11 @@ if __name__=="__main__":
     world=add_obstacle(world,1,6,2,obstacles)
     world=add_obstacle(world,9,9,2,obstacles)
     world=add_obstacle(world,9,9,9,obstacles)
-    world=add_obstacle(world,1,3,1,obstacles)
-    world=add_obstacle(world,1,2,2,obstacles)
+    world=add_obstacle(world,1,1,2,obstacles)
+    world=add_obstacle(world,2,2,2,obstacles)
     world=add_obstacle(world,6,6,6,obstacles)
 
-    bot_radius=1.5
+    bot_radius=0.2
 
     fig = plt.figure(figsize=(20,20))
     ax = fig.add_subplot(111, projection='3d')
@@ -71,7 +71,7 @@ if __name__=="__main__":
 
     while(abs(current_position[0]-dest[0])>destination_threshold and abs(current_position[1]-dest[1])>destination_threshold and abs(current_position[2]-dest[2])>destination_threshold):
 
-        p1 = multiprocessing.Process(target=velocity_control.perform_planning, args=(velocity_signal, current_position,bot_range,world,bot_radius,dest,obstacles,source))
+        p1 = multiprocessing.Process(target=velocity_control.perform_planning, args=(velocity_signal, current_position,bot_range,world,bot_radius,dest,obstacles))
 
         p2 = multiprocessing.Process(target=update_position,args=(velocity_signal,current_position))
 
@@ -86,7 +86,7 @@ if __name__=="__main__":
         p1.join()
         p2.join()
 
-        # time.sleep(2)
+        # time.sleep(1)
     
     for obstacle in obstacles:
         ax.scatter(obstacle[0],obstacle[1],obstacle[2])
